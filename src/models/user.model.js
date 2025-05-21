@@ -1,6 +1,6 @@
 import { randomUUID } from "crypto";
 
-export class User {
+class User {
   constructor({ nome, email }) {
     this.id = randomUUID();
     this.nome = nome;
@@ -9,3 +9,5 @@ export class User {
     this.atualizadoEm = new Date();
   }
 }
+
+export default User;

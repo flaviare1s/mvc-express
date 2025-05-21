@@ -1,11 +1,11 @@
-import { User } from "../models/user.model";
-import userRepository from "../repositories/user.repository";
+import User from "../models/user.model.js";
+import userRepository from "../repositories/user.repository.js";
 
-const UserService = {
+class UserService {
   createUser(data) {
     const user = new User(data);
     return userRepository.create(user)
-  },
+  }
 };
 
 export default new UserService();
