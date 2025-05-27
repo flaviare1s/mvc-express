@@ -1,6 +1,6 @@
-CREATE DATABASE `gt_sul`;
+CREATE DATABASE `gt_db`;
 
-USE `gt_sul`;
+USE `gt_db`;
 
 CREATE TABLE `usuario` (
   `id` int PRIMARY KEY AUTO_INCREMENT,
