@@ -24,18 +24,24 @@ class UserRepository {
     return rows[0] || null;
   }
 
-  update(id, data) {
-    const index = users.findIndex((u) => u.id === id);
-    if (index === -1) return null;
-    users[index] = { ...users[index], ...data };
-    return users[index];
+  async update(id, data) {
+    const [result] = await pool.execute(
+      'UPDATE usuario SET email = ?, senha = ?, role = ? WHERE id = ?',
+      [data.email, data.senha, data.role, id]
+    );
+    if(result.affectedRows === 0) return null;
+    return this.findById(id);
   }
 
-  delete(id) {
-    const index = users.findIndex((u) => u.id === id);
-    if (index === -1) return null;
-    const deleted = users.splice(index, 1);
-    return deleted[0];
+  async delete(id) {
+    const user = await this.findById(id);
+    if(!user) return null;
+
+    await pool.execute(
+      'DELETE from usuario WHERE id = ?',
+      [id]
+    );
+    return user;
   }
 }
 
