@@ -1,36 +1,36 @@
 import userService from "../services/user.service.js";
 
 class UserController {
-  create(req, res, next) {
+  async create(req, res, next) {
     try {
-      const user = userService.createUser(req.body);
-      res.status(201).json(user);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  findAll(_req, res, next) {
-    try {
-      const users = userService.getUsers();
-      res.status(200).json(users);
-    } catch (err) {
-      next(err);
-    }
-  }
-
-  findById(req, res, next) {
-    try {
-      const user = userService.getUserById(req.params.id);
+      const user = await userService.createUser(req.body);
       res.status(200).json(user);
     } catch (err) {
       next(err);
     }
   }
 
-  update(req, res, next) {
+  async findAll(_req, res, next) {
     try {
-      const updated = userService.updateUser(req.params.id, req.body);
+      const users = await userService.getUsers();
+      res.status(200).json(users);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async findById(req, res, next) {
+    try {
+      const user = await userService.getUserById(req.params.id);
+      res.status(200).json(user);
+    } catch (err) {
+      next(err);
+    }
+  }
+
+  async update(req, res, next) {
+    try {
+      const updated = await userService.updateUser(req.params.id, req.body);
       if (!updated)
         return res.status(404).json({ message: "Usuário não encontrado!" });
       res.json(updated);
@@ -39,9 +39,9 @@ class UserController {
     }
   }
 
-  delete(req, res, next) {
+  async delete(req, res, next) {
     try {
-      const deleted = userService.deleteUser(req.params.id);
+      const deleted = await userService.deleteUser(req.params.id);
       if (!deleted)
         return res.status(404).json({ message: "Usuário não encontrado!" });
       res.status(204).send();

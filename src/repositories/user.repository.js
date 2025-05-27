@@ -1,17 +1,27 @@
-let users = [];
+import { pool } from "../config/database.js";
 
 class UserRepository {
-  create(user) {
-    users.push(user);
-    return user;
+  async create(user) {
+    const [result] = await pool.execute(
+      "INSERT INTO usuario (email, senha, role) VALUES (?, ?, ?)",
+      [user.email, user.senha, user.role]
+    );
+    return this.findById(result.insertId);
   }
 
-  findAll() {
-    return users;
+  async findAll() {
+    const [rows] = await pool.execute(
+      "SELECT id, email, role, criado_em, atualizado_em FROM usuario"
+    );
+    return rows;
   }
 
-  findById(id) {
-    return users.find((user) => user.id === id);
+  async findById(id) {
+    const [rows] = await pool.execute(
+      "SELECT id, email, role, criado_em, atualizado_em FROM usuario WHERE id = ?",
+      [id]
+    );
+    return rows[0] || null;
   }
 
   update(id, data) {
