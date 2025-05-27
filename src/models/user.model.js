@@ -1,10 +1,11 @@
 import { randomUUID } from "crypto";
 
 class User {
-  constructor({ nome, email }) {
+  constructor({ email, senha, role }) {
     this.id = randomUUID();
-    this.nome = nome;
     this.email = email;
+    this.senha = senha;
+    this.role = role;
     this.criadoEm = new Date();
     this.atualizadoEm = new Date();
   }
