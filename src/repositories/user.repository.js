@@ -24,6 +24,14 @@ class UserRepository {
     return rows[0] || null;
   }
 
+  async findByEmail(email) {
+    const [rows] = await pool.execute(
+      'SELECT id, email, senha FROM usuario WHERE email = ?',
+      [email]
+    );
+    return rows[0] || null;
+  }
+
   async update(id, data) {
     const [result] = await pool.execute(
       'UPDATE usuario SET email = ?, senha = ?, role = ? WHERE id = ?',

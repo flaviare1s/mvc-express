@@ -4,7 +4,7 @@ class EnderecoController {
   async create(req, res, next) {
     try {
       const endereco = await enderecoService.createEndereco(req.body);
-      res.status(200).json(endereco);
+      res.status(201).json(endereco);
     } catch (err) {
       next(err);
     }
