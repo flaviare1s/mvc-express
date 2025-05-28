@@ -2,9 +2,9 @@ import Endereco from "../models/endereco.model.js";
 import enderecoRepository from "../repositories/endereco.repository.js";
 
 class EnderecoService {
-  createEndereco(data) {
+  async createEndereco(data) {
     const endereco = new Endereco(data);
-    return enderecoRepository.create(endereco);
+    return await enderecoRepository.create(endereco);
   }
 
   getEnderecos() {

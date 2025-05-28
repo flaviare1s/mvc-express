@@ -4,7 +4,7 @@ class EnderecoRepository {
   async create(endereco) {
     const [result] = await pool.execute(
       "INSERT INTO endereco (rua, numero, cidade, estado, cep, complemento) VALUES (?, ?, ?, ?, ?, ?)",
-      [endereco.rua, endereco.numero, endereco.cidade, endereco.estado, endereco.cep, endereco.complemento]
+      [endereco.rua, endereco.numero, endereco.cidade, endereco.estado, endereco.cep, endereco.complemento || null]
     );
     return this.findById(result.insertId);
   }
