@@ -19,6 +19,14 @@ class UserService {
       throw error;
     }
 
+    // Validação de senha
+    if (data.senha.length < 6) {
+      const error = new Error("A senha deve conter no mínimo 6 caracteres");
+      error.statusCode = 400;
+      throw error;
+    }
+
+    // Criptografia de senha
     const saltRounds = 10;
     const hashedPassword = await bcrypt.hash(data.senha, saltRounds);
     data.senha = hashedPassword;
