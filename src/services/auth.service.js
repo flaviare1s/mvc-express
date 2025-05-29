@@ -18,7 +18,9 @@ class AuthService {
     }
 
     // verificar senha
-    const senhaValida = bcrypt.compare(senha, user.senha);
+    const senhaValida = await bcrypt.compare(senha, user.senha);
+    console.log(senhaValida);
+    
     if (!senhaValida) {
       const error = new Error("Email ou senha inválidos");
       error.statusCode = 401;
