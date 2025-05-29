@@ -6,6 +6,9 @@ class AuthService {
   constructor() {
     this.jwtSecret = process.env.JWT_SECRET;
     this.tokenExpiration = process.env.JWT_EXPIRATION;
+
+    // Bind do authenticate
+    this.authenticate = this.authenticate.bind(this);
   }
 
   async login(email, senha) {
@@ -20,7 +23,7 @@ class AuthService {
     // verificar senha
     const senhaValida = await bcrypt.compare(senha, user.senha);
     console.log(senhaValida);
-    
+
     if (!senhaValida) {
       const error = new Error("Email ou senha inválidos");
       error.statusCode = 401;
@@ -38,6 +41,42 @@ class AuthService {
     );
     return { token };
   }
+
+  verifyToken(token) {
+    try {
+      const decoded = jwt.verify(token, this.jwtSecret);
+      decoded;
+    } catch (err) {
+      if (err.name === "TokenExpiredError") {
+        const authError = new Error("Token expirado!");
+        authError.statusCode = 401;
+        throw authError;
+      }
+      const authError = new Error("Token inválido!");
+      authError.statusCode = 401;
+      throw authError;
+    }
+  }
+
+  // Middleware
+  authenticate = (req, _res, next) => {
+    try {
+      const authHeader = req.rawHeaders[5];    
+      console.log(authHeader);
+      
+      if (!authHeader) {
+        const error = new Error("Token não fornecido!");
+        error.statusCode = 401;
+        throw error;
+      }
+
+      const decoded = this.verifyToken(authHeader);
+      req.user = decoded;
+      next();
+    } catch (err) {
+      next(err);
+    }
+  };
 }
 
 export default new AuthService();
