@@ -8,14 +8,14 @@ class AlunoService {
       !data.nome ||
       !data.data_nascimento ||
       !data.usuario_id ||
-      data.endereco_id
+      !data.endereco_id
     ) {
       const error = new Error("Todos os campos são obrigatórios!");
       error.statusCode = 400;
       throw error;
     }
 
-    if (data_nascimento > new Date()) {
+    if (!data.data_nascimento > new Date()) {
       const error = new Error("Data de nascimento não pode ser futura!");
       error.statusCode = 400;
       throw error;
