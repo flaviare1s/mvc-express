@@ -10,9 +10,9 @@ export const app = express();
 app.use(json());
 
 app.use("/auth", authRouter);
+app.use("/users", userRouter);
 
 // Rotas privadas
 app.use(authService.authenticate)
-app.use("/users", userRouter);
 app.use("/enderecos", enderecoRouter);
 app.use("/alunos", alunoRouter);

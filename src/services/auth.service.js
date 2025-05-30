@@ -42,6 +42,7 @@ class AuthService {
     return { token };
   }
 
+  // Middlewares
   verifyToken(token) {
     try {
       const decoded = jwt.verify(token, this.jwtSecret);
@@ -58,7 +59,6 @@ class AuthService {
     }
   }
 
-  // Middleware que verifica token
   authenticate = (req, _res, next) => {
     try {
       console.log(req);
