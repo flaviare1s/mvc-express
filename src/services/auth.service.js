@@ -45,7 +45,7 @@ class AuthService {
   verifyToken(token) {
     try {
       const decoded = jwt.verify(token, this.jwtSecret);
-      decoded;
+      return decoded;
     } catch (err) {
       if (err.name === "TokenExpiredError") {
         const authError = new Error("Token expirado!");
@@ -58,19 +58,32 @@ class AuthService {
     }
   }
 
-  // Middleware
+  // Middleware que verifica token
   authenticate = (req, _res, next) => {
     try {
-      const authHeader = req.rawHeaders[5];    
-      console.log(authHeader);
-      
+      console.log(req);
+      const authHeader = req.headers.authorization;
       if (!authHeader) {
-        const error = new Error("Token não fornecido!");
+        const error = new Error("Token não fornecido");
         error.statusCode = 401;
         throw error;
       }
 
-      const decoded = this.verifyToken(authHeader);
+      const parts = authHeader.split(" ");
+      if (parts.length !== 2) {
+        const error = new Error("Token mal formatado");
+        error.statusCode = 401;
+        throw error;
+      }
+
+      const [scheme, token] = parts;
+      if (!/^Bearer$/i.test(scheme)) {
+        const error = new Error("Token mal formatado");
+        error.statusCode = 401;
+        throw error;
+      }
+
+      const decoded = this.verifyToken(token);
       req.user = decoded;
       next();
     } catch (err) {
