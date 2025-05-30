@@ -1,0 +1,65 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  ALUNO
+  PROFESSOR
+}
+
+model Usuario {
+  id                Int       @id @default(autoincrement())
+  email             String    @unique
+  senha             String
+  role              Role      @default(ADMIN)
+  emailVerificado   Boolean   @default(false) @map("email_verificado")
+  codigoVerificacao String?   @map("codigo_verificacao") @db.VarChar(6)
+  codigoExpiracao   DateTime? @map("codigo_expiracao")
+  criadoEm          DateTime  @default(now()) @map("criado_em")
+  atualizadoEm      DateTime  @updatedAt @map("atualizado_em")
+  aluno             Aluno?
+  // Se quiser adicionar professor depois, adicione aqui: professor Professor?
+  @@map("usuario")
+}
+
+model Endereco {
+  id           Int      @id @default(autoincrement())
+  rua          String
+  numero       String   @db.VarChar(10)
+  cidade       String
+  estado       String   @db.VarChar(2)
+  cep          String   @db.VarChar(8)
+  complemento  String?
+  criadoEm     DateTime @default(now()) @map("criado_em")
+  atualizadoEm DateTime @updatedAt @map("atualizado_em")
+  aluno        Aluno?
+  @@map("endereco")
+  @@index([cep])
+}
+
+model Aluno {
+  id             Int      @id @default(autoincrement())
+  nome           String
+  dataNascimento DateTime @map("data_nascimento")
+  usuarioId      Int      @unique @map("usuario_id")
+  enderecoId     Int      @unique @map("endereco_id")
+  criadoEm       DateTime @default(now()) @map("criado_em")
+  atualizadoEm   DateTime @updatedAt @map("atualizado_em")
+  usuario        Usuario  @relation(fields: [usuarioId], references: [id])
+  endereco       Endereco @relation(fields: [enderecoId], references: [id])
+  @@map("aluno")
+  @@index([nome])
+}
